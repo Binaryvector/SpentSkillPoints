@@ -1,0 +1,9 @@
+## Title: SpentSkillPoints
+## Author: Shinni
+## Version: 1.10
+## APIVersion: 100019 100018
+## SavedVariables: SSP_SavedVars
+
+SpentSkillPoints.xml
+SpentSkillPoints.lua
+SpentSkillPointsUI.lua

@@ -1,0 +1,25 @@
+<GuiXml>
+    <Controls>
+	<Control name="SSP_Header" virtual="true" inherits="ZO_SkillIconHeader">
+		<Controls>
+			<Label name="$(parent)PointText" font="ZoFontHeader3" horizontalAlignment="RIGHT" inherits="ZO_SelectableLabel ZO_IconHeaderMouseArea">
+			    <Anchor point="LEFT" offsetX="216" offsetY="-1" />
+			    <Dimensions x="70" y="0" />
+			</Label>
+		</Controls>
+	</Control>
+        
+        <Label name="SSP_NavigationEntry" virtual="true" font="ZoFontHeader" inherits="ZO_SkillsNavigationEntry">
+		<Controls>
+			<Label name="$(parent)PointText" horizontalAlignment="RIGHT" font="ZoFontHeader" inherits="ZO_SelectableLabel">
+			    <Anchor point="LEFT" offsetX="160" offsetY="0" />
+			    <Dimensions x="50" y="0" />
+			</Label>
+			<Label name="$(parent)LevelText" horizontalAlignment="RIGHT" font="ZoFontHeader" inherits="ZO_SelectableLabel">
+			    <Anchor point="LEFT" offsetX="-60" offsetY="0" />
+			    <Dimensions x="50" y="0" />
+			</Label>
+		</Controls>
+	</Label>
+      </Controls>
+</GuiXml>
