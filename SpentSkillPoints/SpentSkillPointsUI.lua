@@ -31,31 +31,6 @@ local function TreeHeaderSetup(node, control, skillType, open)
 end
 SKILLS_WINDOW.navigationTree:AddTemplate("SSP_Header", TreeHeaderSetup, nil, nil, nil, 0)
 
--- function which returns the maximum rank for each skill line
--- this information is nedded to format the skill level
-local function GetMaxRank(skillType, skillLine)
-	if skillType == SKILL_TYPE_AVA or
-		skillType == SKILL_TYPE_GUILD then
-		local name = GetSkillLineInfo(skillType, skillLine)
-		if name == "Thieves Guild" or "Diebesgilde^f" or "Guilde des voleurs^f" then
-			return 12
-		end
-		if name == "Dark Brotherhood" or "dunkle Bruderschaft^fdc" or "Confrérie noire^f" then
-			return 12
-		end
-		return 10
-	end
-	if skillType == SKILL_TYPE_WORLD then
-		local name = GetSkillLineInfo(skillType, skillLine)
-		if name == "Legerdemain" or name == "Lug und Trug^N" or name == "Escroquerie" then
-			return 20
-		else
-			return 10
-		end
-	end
-	return 50
-end
-
 local navigationSetup = SKILLS_WINDOW.navigationTree.templateInfo["ZO_SkillsNavigationEntry"].setupFunction
 local navigationSelect = SKILLS_WINDOW.navigationTree.templateInfo["ZO_SkillsNavigationEntry"].selectionFunction
 local navigationEQ = SKILLS_WINDOW.navigationTree.templateInfo["ZO_SkillsNavigationEntry"].equalityFunction
@@ -77,7 +52,7 @@ local function TreeEntrySetup(node, control, data, open)
 		-- add the colorized rank for this skill line
 		label = control:GetNamedChild("LevelText")
 		local _, rank = GetSkillLineInfo(data.skillType, data.skillLineIndex)
-		quote = rank / GetMaxRank(data.skillType, data.skillLineIndex)
+		quote = rank / SSP.GetMaxRank(data.skillType, data.skillLineIndex)
 		red = 255 * (1-quote)
 		green = 255 * quote
 		label:SetText(

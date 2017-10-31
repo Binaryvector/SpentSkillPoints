@@ -183,17 +183,53 @@ function SpentSkillPoints.SetSkillSpentPoints( skillType, skillLine, skillIndex 
 end
 
 
+local enchantingSkillType, enchantingSkillLine = GetCraftingSkillLineIndices(CRAFTING_TYPE_ENCHANTING)
+local provisionSkillType, provisionSkillLine = GetCraftingSkillLineIndices(CRAFTING_TYPE_PROVISIONING)
+
+local DARK_BROTHERHOOD = 118
+local FIGHTERS_GUILD = 45
+local MAGES_GUILD = 44
+local THIEVES_GUILD = 117
+local UNDAUNTED = 55
+local SOUL_MAGIC = 72
+local LEGERDEMAIN = 111
+
+-- function which returns the maximum rank for each skill line
+-- this information is nedded to format the skill level
+function SpentSkillPoints.GetMaxRank(skillType, skillLine)
+	if skillType == SKILL_TYPE_AVA or
+		skillType == SKILL_TYPE_GUILD then
+		local name, _, _, skillLineId = GetSkillLineInfo(skillType, skillLine)
+		if skillLineId == THIEVES_GUILD then
+			return 12
+		end
+		if skillLineId == DARK_BROTHERHOOD then
+			return 12
+		end
+		return 10
+	end
+	if skillType == SKILL_TYPE_WORLD then
+		local name = GetSkillLineInfo(skillType, skillLine)
+		if skillLineId == LEGERDEMAIN then
+			return 20
+		else
+			return 10
+		end
+	end
+	return 50
+end
+
 function SpentSkillPoints.ReduceAbility( skillType, skillLine, skillIndex )
 	if skillType == SKILL_TYPE_WORLD then
-		local name = getSkillLineInfo(skillType, skillLine)
+		local name, _, _, skillLineId = getSkillLineInfo(skillType, skillLine)
 		-- everyone has access to soul trap without spending a skill point
-		if name == "Soul Magic" or name == "Seelenmagie^f" or name == "Magie des âmes^f" then
+		if skillLineId == SOUL_MAGIC then
 			if skillIndex == 2 then
 				return 1
 			end
 		end
 		-- werewolves have access to their ultimate without spending a skill point
-		if name == "Werewolf" or name == "Werwolf^m" or name == "Loup-garou^m" then
+		if IsWerewolfSkillLine(skillType, skillLine) then
 			if skillIndex == 1 then
 				return 1
 			end
@@ -204,49 +240,32 @@ function SpentSkillPoints.ReduceAbility( skillType, skillLine, skillIndex )
 			return 1 -- first trade skill rank is always free
 		end
 		
-		if SpentSkillPoints.language ==  "de" then
-			if (skillLine == 6 or skillLine == 5) and skillIndex == 2 then
-				return 1 -- echantment and provision have another free skill
+		-- echantment and provision have another free skill
+		if skillIndex == 2 then
+			if skillType == enchantingSkillType and skillLine == enchantingSkillLine then
+				return 1
 			end
-		elseif SpentSkillPoints.language ==  "fr" then
-			if (skillLine == 3 or skillLine == 5) and skillIndex == 2 then
-				return 1 -- echantment and provision have another free skill
-			end
-		else -- language == "en", but we better don't check for SpentSkillPoints.language ==  "en" and use it as substitute for other languages.
-			if (skillLine == 4 or skillLine == 5) and skillIndex == 2 then
-				return 1 -- echantment and provision have another free skill
+			if skillType == provisionSkillType and skillLine == provisionSkillLine then
+				return 1
 			end
 		end
 	end
-	if skillType == SKILL_TYPE_RACIAL and skillLine <= 10 and skillIndex == 1 then
+	
+	if skillType == SKILL_TYPE_RACIAL and skillIndex == 1 then
 		-- racial exp bonus is free
 		return 1
 	end
+	
 	if skillType == SKILL_TYPE_GUILD then
-		local name = getSkillLineInfo(skillType, skillLine)
-		if name == "Thieves Guild" then
-			if skillIndex == 1 then
-				return 1
-			end
-		elseif name == "Diebesgilde^f" then
-			if skillIndex == 1 then
-				return 1
-			end
-		elseif name == "Guilde des voleurs^f" then
+		local name, _, _, skillLineId = getSkillLineInfo(skillType, skillLine)
+		-- tg and db first skill is free
+		if skillLineId == THIEVES_GUILD then
 			if skillIndex == 1 then
 				return 1
 			end
 		end
 		
-		if name == "Dark Brotherhood" then
-			if skillIndex == 1 then
-				return 1
-			end
-		elseif name == "dunkle Bruderschaft^fdc" then
-			if skillIndex == 1 then
-				return 1
-			end
-		elseif name == "Confrérie noire^f" then
+		if skillLineId == DARK_BROTHERHOOD then
 			if skillIndex == 1 then
 				return 1
 			end
