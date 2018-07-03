@@ -89,21 +89,40 @@ function SpentSkillPoints.GetLineSpentPoints( skillType, skillLine )
 	return SpentSkillPoints.cache.skillTypes[ skillType ].lines[skillLine].total
 end
 
+SpentSkillPoints.racialLines = {
+	--RaceId    SkillLine   Race
+	[1]  = 60,       --Breton
+	[2]  = 62,       --Redguard
+	[3]  = 52,       --Orc
+	[4]  = 64,       --Dark Elf
+	[5]  = 65,       --Nord
+	[6]  = 63,       --Argonian
+	[7]  = 56,       --High Elf
+	[8]  = 57,      --Wood Elf
+	[9]  = 58,       --Khajiit
+	[10] = 59,       --Imperial
+}
+
 function SpentSkillPoints.SetLineSpentPoints( skillType, skillLine )
-	SpentSkillPoints.cache.skillTypes[ skillType ].lines[skillLine] = {}
-	local line = SpentSkillPoints.cache.skillTypes[ skillType ].lines[skillLine]
-	line.skills = {}
-	line.total = 0
-	line.possible = 0
-	local num = getNumSkillAbilities(skillType, skillLine )
-	local spent
-	for i=1,num do
-		spent = SpentSkillPoints.SetSkillSpentPoints( skillType, skillLine, i )
-		line.total = line.total + spent[1]
-		line.possible = line.possible + spent[2]
+	local name, _, _, skillLineId = GetSkillLineInfo( skillType, skillLine )
+	--d(name, skillLineId)
+	if skillType ~= SKILL_TYPE_RACIAL or (skillType == SKILL_TYPE_RACIAL and skillLineId == SpentSkillPoints.racialLines[GetUnitRaceId("player")]) then
+		SpentSkillPoints.cache.skillTypes[ skillType ].lines[skillLine] = {}
+		local line = SpentSkillPoints.cache.skillTypes[ skillType ].lines[skillLine]
+		line.skills = {}
+		line.total = 0
+		line.possible = 0
+		local num = getNumSkillAbilities(skillType, skillLine )
+		local spent
+		for i=1,num do
+			spent = SpentSkillPoints.SetSkillSpentPoints( skillType, skillLine, i )
+			line.total = line.total + spent[1]
+			line.possible = line.possible + spent[2]
+		end
+		
+		return line.total
 	end
-	
-	return line.total
+	return 0
 end
 
 function SpentSkillPoints.GetLinePossiblePoints( skillType, skillLine )
@@ -193,6 +212,7 @@ local THIEVES_GUILD = 117
 local UNDAUNTED = 55
 local SOUL_MAGIC = 72
 local LEGERDEMAIN = 111
+local PSIJIIC_ORDER = 130
 
 -- function which returns the maximum rank for each skill line
 -- this information is nedded to format the skill level
@@ -251,7 +271,8 @@ function SpentSkillPoints.ReduceAbility( skillType, skillLine, skillIndex )
 		end
 	end
 	
-	if skillType == SKILL_TYPE_RACIAL and skillIndex == 1 then
+	local name, _, _, skillLineId = getSkillLineInfo(skillType, skillLine)
+	if skillType == SKILL_TYPE_RACIAL and skillLineId == SpentSkillPoints.racialLines[GetUnitRaceId("player")] and skillIndex == 1 then
 		-- racial exp bonus is free
 		return 1
 	end
@@ -267,6 +288,12 @@ function SpentSkillPoints.ReduceAbility( skillType, skillLine, skillIndex )
 		
 		if skillLineId == DARK_BROTHERHOOD then
 			if skillIndex == 1 then
+				return 1
+			end
+		end
+		
+		if skillLineId == PSIJIIC_ORDER then
+			if skillIndex == 7 then
 				return 1
 			end
 		end
