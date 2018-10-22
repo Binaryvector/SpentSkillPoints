@@ -229,7 +229,7 @@ function SpentSkillPoints.GetMaxRank(skillType, skillLine)
 		return 10
 	end
 	if skillType == SKILL_TYPE_WORLD then
-		local name = GetSkillLineInfo(skillType, skillLine)
+		local name, _, _, skillLineId = GetSkillLineInfo(skillType, skillLine)
 		if skillLineId == LEGERDEMAIN then
 			return 20
 		else

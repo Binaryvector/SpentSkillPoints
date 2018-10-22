@@ -1,7 +1,7 @@
 ## Title: SpentSkillPoints
 ## Author: Shinni
-## Version: 1.13
-## APIVersion: 100024
+## Version: 1.16
+## APIVersion: 100025
 ## SavedVariables: SSP_SavedVars
 
 SpentSkillPoints.xml

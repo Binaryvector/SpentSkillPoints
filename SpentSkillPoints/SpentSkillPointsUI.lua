@@ -2,11 +2,12 @@
 -- the counting of skill points is done in SpentSkillPoints.lua
 
 -- when the skill window is refreshed, we also need to refresh the displayed number of skill points
-local oldRefresh = SKILLS_WINDOW.RefreshSkillInfo
-SKILLS_WINDOW.RefreshSkillInfo = function( self )
+local oldRefresh = SKILLS_WINDOW.RefreshSkillPointInfo
+SKILLS_WINDOW.RefreshSkillPointInfo = function( self )
 	oldRefresh( self )
     
-    self.availablePointsLabel:SetText(zo_strformat(SI_SKILLS_POINTS_TO_SPEND, self.availablePoints) .. "/" .. (SSP.GetTotalSpentPoints() + self.availablePoints))
+	local availablePoints = SKILL_POINT_ALLOCATION_MANAGER:GetAvailableSkillPoints()
+    self.availablePointsLabel:SetText(zo_strformat(SI_SKILLS_POINTS_TO_SPEND, availablePoints) .. "/" .. (SSP.GetTotalSpentPoints() + availablePoints))
 end
 
 -- replace the controls which display the skill lines on the left part of the skill window
