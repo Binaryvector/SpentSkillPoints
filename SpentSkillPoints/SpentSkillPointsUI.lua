@@ -74,3 +74,7 @@ local function TreeEntrySetup(node, control, data, open)
 end
 
 SKILLS_WINDOW.skillLinesTree:AddTemplate("SSP_NavigationEntry", TreeEntrySetup, navigationSelect, navigationEQ)
+
+EVENT_MANAGER:RegisterForEvent("SpentSkillPoints", EVENT_SKILL_RANK_UPDATE, function()
+	SKILLS_WINDOW.skillLinesTreeRefreshGroup:MarkDirty("List")
+end)
